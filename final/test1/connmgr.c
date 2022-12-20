@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <pthread.h>
+#include<fcntl.h>
+#include<unistd.h>
 #include "config.h"
 #include "lib/tcpsock.h"
 #include "connmgr.h"
@@ -16,9 +18,6 @@ void* create_conn(void* client);
 void* connect()
 {
     tcpsock_t *server, *client;
-    //int conn_counter = 0;
-    //pthread_t threads[MAX_CONN];
-    //&threads[0] = (pthread_t* )malloc(total_nodes*sizeof(pthread_t));
     printf("Test server is started\n");
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
     do {
@@ -43,6 +42,7 @@ void* create_conn(void* node)
 {
     sensor_data_t data;
     int bytes, result;
+    short unsigned int first= 0; 
     tcpsock_t * client = (tcpsock_t*) node;
     do {
         // read sensor ID
@@ -55,12 +55,26 @@ void* create_conn(void* node)
         bytes = sizeof(data.ts);
         result = tcp_receive(client, (void *) &data.ts, &bytes);
         if ((result == TCP_NO_ERROR) && bytes) {
-            
+            //printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
+            //           (long int) data.ts);
+            //fflush(stdout);
+            if(first == 0 )
+            {
+                char log[100];
+                sprintf(log,"%ld Sensor node %d has opened a new connection.",time(NULL),data.id);
+                write(fd[WRITE_END], log, 100);
+                first = 1;
+            }
             sbuffer_insert(buffer,&data);
         }
     } while (result == TCP_NO_ERROR);
     if (result == TCP_CONNECTION_CLOSED)
-        printf("Peer has closed connection\n");
+    {
+        //printf("Peer has closed connection\n");
+        char log[100];
+        sprintf(log,"%ld Sensor node %d has closed the connection.",time(NULL),data.id);
+        write(fd[WRITE_END], log, 100);
+    }
     else
         printf("Error occured on connection to peer\n");
     conn_counter--;

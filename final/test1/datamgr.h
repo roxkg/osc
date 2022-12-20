@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "config.h"
+#include "sbuffer.h"
 #include "lib/dplist.h"
 
 #ifndef RUN_AVG_LENGTH
@@ -41,7 +42,7 @@
 //void datamgr_parse_sensor_files(FILE *fp_sensor_map, FILE *fp_sensor_data);
 
 extern sbuffer_t* buffer;
-extern pthread_mutex_t lock;
+//extern pthread_mutex_t lock;
 extern short unsigned int over;
 void datamgr_parse_sensor_files(FILE *fp_sensor_map);
 /**
@@ -85,5 +86,11 @@ int datamgr_get_total_sensors();
 //void element_free(void ** element);
 
 //int element_compare(void * x, void * y);
+
+element_t* datamgr_get_node_by_sensor(sensor_id_t sensor_id);
+
+int datamgr_get_index_by_sensor(sensor_id_t sensor_id);
+
+sensor_value_t get_zeros(sensor_value_t arr[][RUN_AVG_LENGTH],int i,sensor_value_t value);
 
 #endif  //DATAMGR_H_

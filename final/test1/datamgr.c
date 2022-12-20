@@ -3,8 +3,10 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include<unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <pthread.h>
 #include "config.h"
 #include "datamgr.h"
 #include "sbuffer.h"
@@ -26,40 +28,39 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
     {
         sscanf(store, "%hu%hu", &(element.room_id), &(element.sensor_id));
         dpl_insert_at_index(list,&element,9,true);
+        printf("room id %hu -- sensor id %hu\n",element.room_id,element.sensor_id);
     }
-    short unsigned int start[dpl_size(list)][RUN_AVG_LENGTH];
+    sensor_value_t start[dpl_size(list)][RUN_AVG_LENGTH];
+    memset(start,0,sizeof(start));
     sensor_data_t* data = malloc(sizeof(sensor_data_t));
-    while(over!=1)
+    puts("start datamgr parse\n");
+    while(1)
     {
-        pthread_mutex_lock(&lock);
-        sbuffer_remove(buffer,data,false);
+        //pthread_mutex_lock(&lock);
+        int i = sbuffer_remove(buffer,data,0);
+        if(i == SBUFFER_SUCCESS){
         char result[BUS_SIZE];
-        sprintf(result,"%hu %lf %ld\n",data->id,data->value,data->ts);
-        //if(data->id == 0 && over ==1) break;
-        //if(data->id > 0 ) fputs(result,file);
+        sprintf(result,"%hu %g %ld\n",data->id,data->value,data->ts);
         if(datamgr_get_node_by_sensor(data->id) == NULL)
         {
-            //TODO:加id
-            //char log[100] = "Received sensor data with invalid sensor node ID\n";
-            //write_log(log);
+            char log[100];
+            sprintf(log,"%ld Received sensor data with invalid sensor node ID %d",time(NULL),data->id);
+            write(fd[WRITE_END], log, 100);
         }
         else{
             element = *datamgr_get_node_by_sensor(data->id);
-            get_zeros(start,datamgr_get_index_by_sensor(data->id),data->value);
-            //TODO: send error Running average exceeds a minimum or maximum temperature value.
-            sensor_value_t total = 0;
-            for(int i = 0; i < RUN_AVG_LENGTH ; i++)
-            {
-                total += start[datamgr_get_index_by_sensor(data->id)][i];
-            }
-            element.running_avg = total/RUN_AVG_LENGTH;
+            element.running_avg = get_zeros(start,datamgr_get_index_by_sensor(data->id),data->value);
             element.last_modified = time(NULL);
-            buffer->read_first = true;
-            printf("sensor id = %hu - Avgtemperature = %g - timestamp = %ld\n", element.sensor_id, element.running_avg,
+            printf("sensor id = %hu - Avgtemperature = %g - timestamp = %ld\n\n", element.sensor_id, element.running_avg,
                     element.last_modified);
-            //TODO: inform storage manager to remove data from buffer. 
+            char log[100];
+            if(element.running_avg < SET_MIN_TEMP)
+            sprintf(log,"%ld Sensor node %d reports it's too cold (avg temp = %g)",time(NULL),element.sensor_id,element.running_avg);
+            if(element.running_avg > SET_MAX_TEMP)
+            sprintf(log,"%ld Sensor node %d reports it's too hot (avg temp = %g)",time(NULL),element.sensor_id,element.running_avg);
+            write(fd[WRITE_END], log, 100); 
         }
-        pthread_mutex_unlock(&lock);
+        }//pthread_mutex_unlock(&lock);
     }
     free(data);
 }
@@ -130,21 +131,27 @@ element_t* datamgr_get_node_by_sensor(sensor_id_t sensor_id)
 {
     short unsigned int find = 0;
     element_t* element;
+    //if(sensor_id!=0)
+    //printf("start to find sensor %hu\n",sensor_id);
     for(int i = 0 ; i < dpl_size(list);i++){
         element = (element_t *)dpl_get_element_at_index(list,i);
         sensor_id_t id = element->sensor_id;
+        //if(sensor_id!= 0)
+        //printf("current sensor id %hu--current index %d\n",id,i);
         if(id == sensor_id) {
             find = 1;
             break;
         }
     }
-    if(find == 1)   return element;
+    if(find == 1)   {return element;}
     else    return NULL;
 }
 
 int datamgr_get_index_by_sensor(sensor_id_t sensor_id)
 {
     element_t* element = datamgr_get_node_by_sensor(sensor_id);
+    //if(sensor_id == 15)
+    //printf("the sensor id of the element is %hu\n",element->sensor_id);
     return dpl_get_index_of_element(list,element);
 }
 
@@ -168,27 +175,43 @@ void element_free(void ** element) {
 }
 
 static int element_compare(void * x, void * y) {
-    //return ((((element_t*)x)->last_modified < ((element_t*)y)->last_modified) ? 
-    //-1 : (((element_t*)x)->last_modified == ((element_t*)y)->last_modified) ? 0 : 1);
-    return -1;
+    return ((((element_t*)x)->sensor_id < ((element_t*)y)->sensor_id) ? 
+    -1 : (((element_t*)x)->sensor_id == ((element_t*)y)->sensor_id) ? 0 : 1);
+    //return -1;
 }
 
-void get_zeros(int arr[][RUN_AVG_LENGTH],int i,sensor_value_t value)
+sensor_value_t get_zeros(sensor_value_t arr[][RUN_AVG_LENGTH],int i,sensor_value_t value)
 {
     int counter = 0;
     for(int j = 0; j < RUN_AVG_LENGTH; j++){
-        if(arr[i][j]!=0)  counter++;  
+        if(arr[i][j]==0)  {break;} 
+        counter++;
     }
     if(counter == RUN_AVG_LENGTH){
         arr[i][0] = 0;
-        for(int m = 1; m < RUN_AVG_LENGTH; m++)
+        for(int m = 0; m < RUN_AVG_LENGTH - 1; m++)
         {
-            arr[i][m - 1] = arr[i][m];
+            arr[i][m] = arr[i][m+1];
         }
-        arr[i][RUN_AVG_LENGTH-1] = value;
+        arr[i][RUN_AVG_LENGTH - 1] = value;
     }
     else{
         arr[i][counter] = value;
+        counter++;
     }
+    //for(int j = 0; j < RUN_AVG_LENGTH;j++)
+    //{
+    //    printf("arr%d--%G\n",j,arr[i][j]); 
+    //}
+    sensor_value_t total = 0;
+    //counter = (counter == RUN_AVG_LENGTH) ? counter : counter+1;
+    for(int x = 0; x < counter ; x++)
+    {
+        total += arr[i][x];
+    }
+    if(counter == RUN_AVG_LENGTH)
+        return total/RUN_AVG_LENGTH;
+    else    
+        return total/counter;
 }
 

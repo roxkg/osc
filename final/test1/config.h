@@ -7,7 +7,12 @@
 
 #include <stdint.h>
 #include <time.h>
-#include <stdbool.h>
+
+# define MAX_SIZE 100
+# define READ_END 0
+# define WRITE_END 1
+
+extern int fd[2];
 
 typedef uint16_t sensor_id_t;
 typedef uint16_t room_id_t;

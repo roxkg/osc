@@ -261,6 +261,7 @@ int dpl_get_index_of_element(dplist_t *list, void *element) {
     //TODO: add your code here
     if(list == NULL || list->head == NULL)
     {
+        printf("error, shouldn't be here\n");
         return -1;
     }
     dplist_node_t* list_node = list->head;
