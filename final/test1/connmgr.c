@@ -9,7 +9,7 @@
 #include "connmgr.h"
 
 #define PORT 5678
-#define MAX_CONN 99
+#define MAX_CONN 4
 
 //extern conn_list_t * connList;
 

@@ -30,7 +30,6 @@ void* init_datamgr();
 int main()
 {
     sbuffer_init(&buffer);
-    time_t start,end;
     pthread_t connmgr,stormgr,datamgr;
     //pthread_mutex_init(&lock,NULL);
     sbuffer_init(&buffer);
@@ -53,31 +52,34 @@ int main()
     // Parent process
     else if (p > 0) {
         //TODO: WRITE LOG 
+        time_t start,end;
+        start = 0; end = 0;
         while(1)
         {
-            printf("start:%ld\n",start);
-            printf("end:%ld\n",end);
             if(conn_counter == 0)
             {
-                if(start == 0)    {time(&start);printf("start:%ld\n",start);}
-                else {time(&end);printf("end:%ld\n",end);}
+                if(start == 0)    {time(&start);}
+                else {time(&end);}
                 if((end - start)>TIME_OUT)  
                 {
                     printf("total counter: %d\n",total_counter);
                     for(int i = 0; i < total_counter;i++)
                     {
                         printf("cancel\n");
-                        int x = pthread_cancel(threads[i]);
+                        int x = pthread_join(threads[i],NULL);
                         printf("%d\n",x);
                     }
                     int x = pthread_cancel(connmgr);
                     printf("connmgr: %d\n",x);
-                    x = pthread_cancel(stormgr);
-                    printf("stormgr: %d\n",x);
-                    puts("qwert");
-                    x = pthread_cancel(datamgr);
-                    printf("datamgr: %d\n",x);
+                    sensor_data_t data;
+                    data.id = 0;
+                    sbuffer_insert(buffer,&data);
+                    //x = pthread_cancel(stormgr);
+                    //printf("stormgr: %d\n",x);
+                    //x = pthread_cancel(datamgr);
+                    //printf("datamgr: %d\n",x);
                     over = 1;
+                    
                     break;
                 }
             }
@@ -89,7 +91,6 @@ int main()
         pthread_join(connmgr,NULL);
         pthread_join(stormgr,NULL);
         pthread_join(datamgr,NULL);
-        write(fd[WRITE_END],"close",6);
         printf("sensor file done!\n");
         sbuffer_free(&buffer);
         wait(NULL);
@@ -106,15 +107,13 @@ int main()
             exit(0);
         }
         while(1) {   
-            printf("looping... \n");
             char buff[100];
             read(fd[0], buff, 100);
-            printf(" %s,fefeee", buff);
-            puts("qwertyu");
-            fflush(stdout);
+            printf(" %s\n", buff);
             if(strcmp(buff, "close")==0) break;
             counter++;
-            fprintf(logFile, "%d %s\n",counter,buff);    
+            fprintf(logFile, "%d %s\n",counter,buff);
+            fflush(logFile);    
         }    
         fclose(logFile);       
         printf("child finish\n");
@@ -122,15 +121,13 @@ int main()
     }
     close(fd[READ_END]);
     close(fd[WRITE_END]);
-    
-
     return 0;
 }
 
 void* init_connmgr()
 {
     connect();
-    return NULL;
+    pthread_exit(SBUFFER_SUCCESS);
 }
 
 void* init_stormgr()
@@ -140,9 +137,13 @@ void* init_stormgr()
     sprintf(log,"%ld A new data.csv file has been created.",time(NULL));
     write(fd[WRITE_END], log, 100);
     stormgr_init(file);
+    puts("a");
     fclose(file);
+    puts("b");
     sprintf(log,"%ld The data.csv file has been closed. ",time(NULL));
     write(fd[WRITE_END], log, 100);
+    write(fd[WRITE_END],"close",6);
+    puts("stormgr close");
     pthread_exit(SBUFFER_SUCCESS);
 }
 
@@ -151,5 +152,6 @@ void* init_datamgr()
     FILE * map = fopen("room_sensor.map", "r");
     if(map == NULL) {perror("fail to open room_sensor");pthread_exit(SBUFFER_SUCCESS);}
     datamgr_parse_sensor_files(map);
+    puts("datamgr close");
     pthread_exit(SBUFFER_SUCCESS);
 }

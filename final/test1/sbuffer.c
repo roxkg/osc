@@ -38,22 +38,20 @@ int stormgr_init(FILE* file){
         int i = sbuffer_remove(buffer,data,1);
         //printf("%d\n",i);
         if(i == SBUFFER_FAILURE) {perror("sbuffer read failure");break;}
-        sprintf(result,"%hu %lf %ld\n",data->id,data->value,data->ts);
         if(i == SBUFFER_SUCCESS ) {
-            puts("stormgr input");
+            sprintf(result,"%hu %lf %ld\n",data->id,data->value,data->ts);
+            printf("received id: %d\n",data->id);
+            if(data->id==0) {puts("stormgr break");break;}
             fputs(result,file);
-            puts("stormgr input");
             sprintf(log,"%ld Data insertion from sensor %d succeeded.",time(NULL),data->id);
-            puts("stormgr input");
             fflush(stdout);
-            puts(log);
-            puts("stormgr input");
-            //write(fd[WRITE_END], log, 100);
+            write(fd[WRITE_END], log, 100);
         }
         //pthread_mutex_unlock(&lock);
         fflush(file);
     }
     free(data);
+    puts("stormgr_init exit");
     return SBUFFER_SUCCESS;
 }
 
@@ -101,14 +99,15 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data, short unsigned int re
             buffer->head = buffer->tail = NULL;
             free(dummy);
             buffer->read_first = 0;
-            printf("stormgr: %d--%g--%ld\n",data->id,data->value,data->ts);
+            //printf("stormgr: %d--%g--%ld\n",data->id,data->value,data->ts);
             pthread_cond_signal(&(buffer->cond_signal));
         }
         else{
             buffer->read_first = 1;
-            printf("datamgr: %d--%g--%ld\n",data->id,data->value,data->ts);
+            printf("datamgr: %d\n",buffer->read_first);
             pthread_cond_signal(&(buffer->cond_signal));
         }
+        if(data->id != 0)
         pthread_cond_wait(&(buffer->cond_signal),&(buffer->lock));
     }
     else{
@@ -123,12 +122,12 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data, short unsigned int re
             buffer->head = buffer->head->next;
             free(dummy);
             buffer->read_first = 0;
-            printf("stormgr: %d--%g--%ld\n",data->id,data->value,data->ts);
+            //printf("stormgr: %d--%g--%ld\n",data->id,data->value,data->ts);
             pthread_cond_signal(&(buffer->cond_signal));
         }
         else{
             buffer->read_first = 1;
-            printf("datamgr: %d--%g--%ld\n",data->id,data->value,data->ts);
+            //printf("datamgr: %d--%g--%ld\n",data->id,data->value,data->ts);
             pthread_cond_signal(&(buffer->cond_signal));
         }
     }
