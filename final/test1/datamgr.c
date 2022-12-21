@@ -51,14 +51,17 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
             element = *datamgr_get_node_by_sensor(data->id);
             element.running_avg = get_zeros(start,datamgr_get_index_by_sensor(data->id),data->value);
             element.last_modified = time(NULL);
-            printf("sensor id = %hu - Avgtemperature = %g - timestamp = %ld\n\n", element.sensor_id, element.running_avg,
-                    element.last_modified);
+            //printf("sensor id = %hu - Avgtemperature = %lf - timestamp = %ld\n\n", element.sensor_id, element.running_avg,
+            //        element.last_modified);
+            printf("fefefe\n");
             char log[100];
             if(element.running_avg < SET_MIN_TEMP)
-            sprintf(log,"%ld Sensor node %d reports it's too cold (avg temp = %g)",time(NULL),element.sensor_id,element.running_avg);
+            sprintf(log,"%ld Sensor node %hu reports it's too cold (avg temp = %lf)",time(NULL),element.sensor_id,element.running_avg);
             if(element.running_avg > SET_MAX_TEMP)
-            sprintf(log,"%ld Sensor node %d reports it's too hot (avg temp = %g)",time(NULL),element.sensor_id,element.running_avg);
+            sprintf(log,"%ld Sensor node %hu reports it's too hot (avg temp = %lf)",time(NULL),element.sensor_id,element.running_avg);
             write(fd[WRITE_END], log, 100); 
+            sprintf(log,"%ld Data insertion from sensor %hu succeeded.",time(NULL),element.sensor_id);
+            write(fd[WRITE_END], log, 100);
         }
         }//pthread_mutex_unlock(&lock);
     }

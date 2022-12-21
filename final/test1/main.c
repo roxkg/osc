@@ -52,14 +52,15 @@ int main()
     }
     // Parent process
     else if (p > 0) {
-        FILE* f = open_db("test.txt",false);
         //TODO: WRITE LOG 
         while(1)
         {
+            printf("start:%ld\n",start);
+            printf("end:%ld\n",end);
             if(conn_counter == 0)
             {
-                if(start == 0)    time(&start);
-                else time(&end);
+                if(start == 0)    {time(&start);printf("start:%ld\n",start);}
+                else {time(&end);printf("end:%ld\n",end);}
                 if((end - start)>TIME_OUT)  
                 {
                     printf("total counter: %d\n",total_counter);
@@ -73,6 +74,7 @@ int main()
                     printf("connmgr: %d\n",x);
                     x = pthread_cancel(stormgr);
                     printf("stormgr: %d\n",x);
+                    puts("qwert");
                     x = pthread_cancel(datamgr);
                     printf("datamgr: %d\n",x);
                     over = 1;
@@ -87,7 +89,6 @@ int main()
         pthread_join(connmgr,NULL);
         pthread_join(stormgr,NULL);
         pthread_join(datamgr,NULL);
-        close_db(f);
         write(fd[WRITE_END],"close",6);
         printf("sensor file done!\n");
         sbuffer_free(&buffer);
@@ -108,12 +109,12 @@ int main()
             printf("looping... \n");
             char buff[100];
             read(fd[0], buff, 100);
-            printf(" %s", buff);
+            printf(" %s,fefeee", buff);
+            puts("qwertyu");
             fflush(stdout);
             if(strcmp(buff, "close")==0) break;
-            char* result = strtok(buff, "\n");
             counter++;
-            fprintf(logFile, "%d %s\n",counter,result);    
+            fprintf(logFile, "%d %s\n",counter,buff);    
         }    
         fclose(logFile);       
         printf("child finish\n");
@@ -135,22 +136,13 @@ void* init_connmgr()
 void* init_stormgr()
 {
     FILE* file = fopen("data.csv","w");
-    sensor_data_t* data = malloc(sizeof(sensor_data_t));
-    while(over != 1)
-    {
-        //pthread_mutex_lock(&lock);
-        char result[BUS_SIZE];
-        int i = sbuffer_remove(buffer,data,1);
-        //printf("%d\n",i);
-        if(i == SBUFFER_FAILURE) {perror("sbuffer read failure");break;}
-        sprintf(result,"%hu %lf %ld\n",data->id,data->value,data->ts);
-        if(i == SBUFFER_SUCCESS ) {fputs(result,file);}
-        //pthread_mutex_unlock(&lock);
-        fflush(file);
-    }
-    printf("overb\n");
-    free(data);
+    char log[100];
+    sprintf(log,"%ld A new data.csv file has been created.",time(NULL));
+    write(fd[WRITE_END], log, 100);
+    stormgr_init(file);
     fclose(file);
+    sprintf(log,"%ld The data.csv file has been closed. ",time(NULL));
+    write(fd[WRITE_END], log, 100);
     pthread_exit(SBUFFER_SUCCESS);
 }
 

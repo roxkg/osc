@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include<unistd.h>
+#include <fcntl.h>
 #include "sbuffer.h"
 
 /**
@@ -25,6 +27,35 @@ struct sbuffer {
     pthread_cond_t cond_signal;
     short unsigned int read_first;
 };
+
+int stormgr_init(FILE* file){
+    sensor_data_t* data = malloc(sizeof(sensor_data_t));
+    char log[MAX_SIZE];
+    while(1)
+    {
+        //pthread_mutex_lock(&lock);
+        char result[MAX_SIZE];
+        int i = sbuffer_remove(buffer,data,1);
+        //printf("%d\n",i);
+        if(i == SBUFFER_FAILURE) {perror("sbuffer read failure");break;}
+        sprintf(result,"%hu %lf %ld\n",data->id,data->value,data->ts);
+        if(i == SBUFFER_SUCCESS ) {
+            puts("stormgr input");
+            fputs(result,file);
+            puts("stormgr input");
+            sprintf(log,"%ld Data insertion from sensor %d succeeded.",time(NULL),data->id);
+            puts("stormgr input");
+            fflush(stdout);
+            puts(log);
+            puts("stormgr input");
+            //write(fd[WRITE_END], log, 100);
+        }
+        //pthread_mutex_unlock(&lock);
+        fflush(file);
+    }
+    free(data);
+    return SBUFFER_SUCCESS;
+}
 
 int sbuffer_init(sbuffer_t **buffer) {
     *buffer = malloc(sizeof(sbuffer_t));
