@@ -52,7 +52,7 @@ int main()
     // Parent process
     else if (p > 0) {
         //TODO: WRITE LOG 
-        time_t start,end;
+        /*time_t start,end;
         start = 0; end = 0;
         while(1)
         {
@@ -87,7 +87,7 @@ int main()
             {
                 start = 0; end = 0;
             }
-        }
+        }*/
         pthread_join(connmgr,NULL);
         pthread_join(stormgr,NULL);
         pthread_join(datamgr,NULL);
@@ -109,7 +109,7 @@ int main()
         while(1) {   
             char buff[100];
             read(fd[0], buff, 100);
-            printf(" %s\n", buff);
+            printf("%s\n", buff);
             if(strcmp(buff, "close")==0) break;
             counter++;
             fprintf(logFile, "%d %s\n",counter,buff);
@@ -137,9 +137,7 @@ void* init_stormgr()
     sprintf(log,"%ld A new data.csv file has been created.",time(NULL));
     write(fd[WRITE_END], log, 100);
     stormgr_init(file);
-    puts("a");
     fclose(file);
-    puts("b");
     sprintf(log,"%ld The data.csv file has been closed. ",time(NULL));
     write(fd[WRITE_END], log, 100);
     write(fd[WRITE_END],"close",6);

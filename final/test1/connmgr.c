@@ -9,7 +9,7 @@
 #include "connmgr.h"
 
 #define PORT 5678
-#define MAX_CONN 4
+#define MAX_CONN 2
 
 //extern conn_list_t * connList;
 
@@ -35,6 +35,13 @@ void* connect()
     } while (conn_counter < MAX_CONN);
     if (tcp_close(&server) != TCP_NO_ERROR) exit(EXIT_FAILURE);
     printf("Test server is shutting down\n");
+    for(int i = 0; i < MAX_CONN;i++)
+    {
+        pthread_join(threads[i],NULL);
+    }
+    sensor_data_t data;
+    data.id = 0;
+    sbuffer_insert(buffer,&data);
     pthread_exit(SBUFFER_SUCCESS);
 }
 

@@ -5,14 +5,14 @@ test1: sbuffer.c main.c connmgr.c lib/tcpsock.c lib/dplist.c datamgr.c sensor_db
 sensor_node: sensor_node.c lib/tcpsock.c
 	gcc sensor_node.c lib/tcpsock.c -o sensor_node
 
-runserver: test_server
+runserver:
 	./test_server 5678
 
 runclient1: sensor_node
-	./sensor_node 1 2 127.0.0.1 5678
+	./sensor_node 15 1 127.0.0.1 5678
 
 runclient2: sensor_node
-	./sensor_node 21 5 127.0.0.1 5678
+	./sensor_node 21 2 127.0.0.1 5678
 
 runclient3: sensor_node
 	./sensor_node 37 4 127.0.0.1 5678
