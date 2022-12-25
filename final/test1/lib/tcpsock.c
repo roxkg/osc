@@ -68,7 +68,7 @@ int tcp_passive_open(tcpsock_t **sock, int port) {
     TCP_ERR_HANDLER(s == NULL, return TCP_MEMORY_ERROR);
     s->sd = socket(PROTOCOLFAMILY, TYPE, PROTOCOL);
     TCP_DEBUG_PRINTF(s->sd < 0, "Socket() failed with errno = %d [%s]", errno, strerror(errno));
-    TCP_ERR_HANDLER(s->sd < 0, free(s);return TCP_SOCKOP_ERROR);
+    TCP_ERR_HANDLER(s->sd < 0, free(s);return 6);
     // Construct the server address structure
     memset(&addr, 0, sizeof(struct sockaddr_in));
     addr.sin_family = PROTOCOLFAMILY;
@@ -76,10 +76,10 @@ int tcp_passive_open(tcpsock_t **sock, int port) {
     addr.sin_port = htons(port);
     result = bind(s->sd, (struct sockaddr *) &addr, sizeof(addr));
     TCP_DEBUG_PRINTF(result == -1, "Bind() failed with errno = %d [%s]", errno, strerror(errno));
-    TCP_ERR_HANDLER(result != 0, free(s);return TCP_SOCKOP_ERROR);
+    TCP_ERR_HANDLER(result != 0, free(s);return 7);
     result = listen(s->sd, MAX_PENDING);
     TCP_DEBUG_PRINTF(result == -1, "Listen() failed with errno = %d [%s]", errno, strerror(errno));
-    TCP_ERR_HANDLER(result != 0, free(s);return TCP_SOCKOP_ERROR);
+    TCP_ERR_HANDLER(result != 0, free(s);return 8);
     s->ip_addr = NULL; // address set to INADDR_ANY - not a specific IP address
     s->port = port;
     s->cookie = MAGIC_COOKIE;

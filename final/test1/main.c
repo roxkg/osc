@@ -19,7 +19,6 @@ sbuffer_t *buffer;
 //pthread_mutex_t lock;
 int conn_counter = 0;
 int total_counter = 0;
-short unsigned int over = 0;
 pthread_t threads[99];
 int fd[2];
 
@@ -30,13 +29,13 @@ void* init_datamgr();
 int main()
 {
     sbuffer_init(&buffer);
-    pthread_t connmgr,stormgr,datamgr;
+    pthread_t connmgr,datamgr;//,stormgr;
     //pthread_mutex_init(&lock,NULL);
     sbuffer_init(&buffer);
     if(pthread_create(&connmgr, NULL, init_connmgr,NULL)!=0) 
                 printf("\ncan't create thread connmgr"); 
-    if(pthread_create(&stormgr, NULL, init_stormgr,NULL)!=0) 
-                printf("\ncan't create storage connmgr"); 
+    //if(pthread_create(&stormgr, NULL, init_stormgr,NULL)!=0) 
+                //printf("\ncan't create storage connmgr"); 
     if(pthread_create(&datamgr, NULL, init_datamgr,NULL)!=0) 
                 printf("\ncan't create datamgr connmgr"); 
     pid_t p;
@@ -52,7 +51,7 @@ int main()
     // Parent process
     else if (p > 0) {
         //TODO: WRITE LOG 
-        /*time_t start,end;
+        time_t start,end;
         start = 0; end = 0;
         while(1)
         {
@@ -78,8 +77,8 @@ int main()
                     //printf("stormgr: %d\n",x);
                     //x = pthread_cancel(datamgr);
                     //printf("datamgr: %d\n",x);
-                    over = 1;
-                    
+                    //over = 1;
+                    write(fd[WRITE_END],"close",6);
                     break;
                 }
             }
@@ -87,9 +86,9 @@ int main()
             {
                 start = 0; end = 0;
             }
-        }*/
+        }
         pthread_join(connmgr,NULL);
-        pthread_join(stormgr,NULL);
+        //pthread_join(stormgr,NULL);
         pthread_join(datamgr,NULL);
         printf("sensor file done!\n");
         sbuffer_free(&buffer);
@@ -109,11 +108,12 @@ int main()
         while(1) {   
             char buff[100];
             read(fd[0], buff, 100);
-            printf("%s\n", buff);
-            if(strcmp(buff, "close")==0) break;
-            counter++;
-            fprintf(logFile, "%d %s\n",counter,buff);
-            fflush(logFile);    
+            if(strcmp(buff,"")!=0){
+                printf("%s\n", buff);
+                if(strcmp(buff, "close")==0) break;
+                counter++;
+                fprintf(logFile, "%d %s\n",counter,buff);
+                fflush(logFile);}    
         }    
         fclose(logFile);       
         printf("child finish\n");
@@ -136,8 +136,10 @@ void* init_stormgr()
     char log[100];
     sprintf(log,"%ld A new data.csv file has been created.",time(NULL));
     write(fd[WRITE_END], log, 100);
-    stormgr_init(file);
+    printf("stor init return: %d\n",stormgr_init(file));
+    puts("herea");
     fclose(file);
+    puts("hereb");
     sprintf(log,"%ld The data.csv file has been closed. ",time(NULL));
     write(fd[WRITE_END], log, 100);
     write(fd[WRITE_END],"close",6);

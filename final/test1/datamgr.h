@@ -43,7 +43,6 @@
 
 extern sbuffer_t* buffer;
 //extern pthread_mutex_t lock;
-extern short unsigned int over;
 void datamgr_parse_sensor_files(FILE *fp_sensor_map);
 /**
  * This method should be called to clean up the datamgr, and to free all used memory. 

@@ -19,10 +19,12 @@ void* connect()
 {
     tcpsock_t *server, *client;
     printf("Test server is started\n");
-    if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
+    int i = tcp_passive_open(&server, PORT);
+    if ( i!= TCP_NO_ERROR) {printf("error codea: %d\n",i);exit(EXIT_FAILURE);}
     do {
         printf("%d\n",conn_counter);
-        if (tcp_wait_for_connection(server, &client) != TCP_NO_ERROR) exit(EXIT_FAILURE);
+        int j = tcp_wait_for_connection(server, &client);
+        if (j != TCP_NO_ERROR) {printf("error codeb: %d\n",j);exit(EXIT_FAILURE);}
         printf("Incoming client connection\n");
         conn_counter++;
         total_counter = conn_counter;

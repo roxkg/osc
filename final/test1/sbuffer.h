@@ -14,7 +14,6 @@
 typedef struct sbuffer sbuffer_t;
 
 extern sbuffer_t *buffer;
-extern short unsigned int over;
 /**
  * Allocates and initializes a new shared buffer
  * \param buffer a double pointer to the buffer that needs to be initialized

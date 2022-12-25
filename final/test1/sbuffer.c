@@ -43,7 +43,8 @@ int stormgr_init(FILE* file){
             if(data->id==0) {puts("stormgr break");break;}
             fputs(result,file);
             sprintf(log,"%ld Data insertion from sensor %d succeeded.",time(NULL),data->id);
-            fflush(stdout);
+            //puts("fefefe");
+            //fflush(stdout);
             write(fd[WRITE_END], log, 100);
         }
         //pthread_mutex_unlock(&lock);
