@@ -14,12 +14,15 @@
 typedef struct sbuffer sbuffer_t;
 
 extern sbuffer_t *buffer;
+extern int conn_counter;
+extern pthread_mutex_t insert_lock;
+extern pthread_cond_t insert_signal;
 /**
  * Allocates and initializes a new shared buffer
  * \param buffer a double pointer to the buffer that needs to be initialized
  * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
  */
-int stormgr_init(FILE* file);
+void stormgr_init(FILE* file);
 
 int sbuffer_init(sbuffer_t **buffer);
 

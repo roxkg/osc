@@ -9,17 +9,17 @@
 #include "connmgr.h"
 #include "datamgr.h"
 #include "sensor_db.h"
-#define BUS_SIZE 64
-#define TIME_OUT 5
+
 /*
     try to combine connmgr & sbuffer. Realize print data within sbuffer_remove
     and exit correctly. one in and one out
 */
 sbuffer_t *buffer;
-//pthread_mutex_t lock;
+pthread_mutex_t insert_lock;
+pthread_cond_t insert_signal;
 int conn_counter = 0;
 int total_counter = 0;
-pthread_t threads[99];
+pthread_t threads[MAX_CONN];
 int fd[2];
 
 void* init_connmgr();
@@ -29,13 +29,14 @@ void* init_datamgr();
 int main()
 {
     sbuffer_init(&buffer);
-    pthread_t connmgr,datamgr;//,stormgr;
-    //pthread_mutex_init(&lock,NULL);
+    pthread_t connmgr,datamgr,stormgr;
+    pthread_mutex_init(&insert_lock,NULL);
+    pthread_cond_init(&insert_signal,NULL);
     sbuffer_init(&buffer);
     if(pthread_create(&connmgr, NULL, init_connmgr,NULL)!=0) 
                 printf("\ncan't create thread connmgr"); 
-    //if(pthread_create(&stormgr, NULL, init_stormgr,NULL)!=0) 
-                //printf("\ncan't create storage connmgr"); 
+    if(pthread_create(&stormgr, NULL, init_stormgr,NULL)!=0) 
+                printf("\ncan't create storage connmgr"); 
     if(pthread_create(&datamgr, NULL, init_datamgr,NULL)!=0) 
                 printf("\ncan't create datamgr connmgr"); 
     pid_t p;
@@ -49,8 +50,7 @@ int main()
         return 1;
     }
     // Parent process
-    else if (p > 0) {
-        //TODO: WRITE LOG 
+    else if (p > 0) { 
         time_t start,end;
         start = 0; end = 0;
         while(1)
@@ -73,12 +73,6 @@ int main()
                     sensor_data_t data;
                     data.id = 0;
                     sbuffer_insert(buffer,&data);
-                    //x = pthread_cancel(stormgr);
-                    //printf("stormgr: %d\n",x);
-                    //x = pthread_cancel(datamgr);
-                    //printf("datamgr: %d\n",x);
-                    //over = 1;
-                    write(fd[WRITE_END],"close",6);
                     break;
                 }
             }
@@ -88,7 +82,7 @@ int main()
             }
         }
         pthread_join(connmgr,NULL);
-        //pthread_join(stormgr,NULL);
+        pthread_join(stormgr,NULL);
         pthread_join(datamgr,NULL);
         printf("sensor file done!\n");
         sbuffer_free(&buffer);
@@ -119,6 +113,7 @@ int main()
         printf("child finish\n");
         exit(0);
     }
+    pthread_cond_destroy(&insert_signal);
     close(fd[READ_END]);
     close(fd[WRITE_END]);
     return 0;
@@ -132,18 +127,9 @@ void* init_connmgr()
 
 void* init_stormgr()
 {
-    FILE* file = fopen("data.csv","w");
-    char log[100];
-    sprintf(log,"%ld A new data.csv file has been created.",time(NULL));
-    write(fd[WRITE_END], log, 100);
-    printf("stor init return: %d\n",stormgr_init(file));
-    puts("herea");
-    fclose(file);
-    puts("hereb");
-    sprintf(log,"%ld The data.csv file has been closed. ",time(NULL));
-    write(fd[WRITE_END], log, 100);
-    write(fd[WRITE_END],"close",6);
-    puts("stormgr close");
+    FILE* file = open_db("data.csv",false);
+    stormgr_init(file);
+    close_db(file);
     pthread_exit(SBUFFER_SUCCESS);
 }
 
@@ -153,5 +139,6 @@ void* init_datamgr()
     if(map == NULL) {perror("fail to open room_sensor");pthread_exit(SBUFFER_SUCCESS);}
     datamgr_parse_sensor_files(map);
     puts("datamgr close");
+    datamgr_free();
     pthread_exit(SBUFFER_SUCCESS);
 }

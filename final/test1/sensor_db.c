@@ -20,8 +20,9 @@ FILE * open_db(char * filename, bool append)
         file = fopen(filename, "w");
     }
     char log[100];
-    sprintf(log,"%ld A new csv file is created or an existing file has been opened.",time(NULL));
-    printf("%ld\n",write(fd[WRITE_END], log, 100));
+    memset(log,0,sizeof(log));
+    sprintf(log,"%ld A new csv file is created.",time(NULL));
+    write(fd[WRITE_END], log, 100);
     assert(file!=NULL);
     return file;
 }
@@ -46,6 +47,7 @@ int close_db(FILE *f)
 {
     int i = fclose(f);
     char log[100];
+    memset(log,0,sizeof(log));
     if(i < 0) 
     {
         sprintf(log,"%ld An error occured when closing the csv file.",time(NULL));       
@@ -55,6 +57,7 @@ int close_db(FILE *f)
         sprintf(log,"%ld The csv file has been closed.",time(NULL));
     }
     write(fd[WRITE_END], log, 100);
+    write(fd[WRITE_END],"close",6);
     return i;
 }
 

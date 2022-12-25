@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <pthread.h>
-#include<fcntl.h>
-#include<unistd.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
 #include "config.h"
 #include "lib/tcpsock.h"
 #include "connmgr.h"
 
-#define PORT 5678
-#define MAX_CONN 2
+
 
 //extern conn_list_t * connList;
 
@@ -64,16 +64,18 @@ void* create_conn(void* node)
         bytes = sizeof(data.ts);
         result = tcp_receive(client, (void *) &data.ts, &bytes);
         if ((result == TCP_NO_ERROR) && bytes) {
-            //printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
-            //           (long int) data.ts);
+            printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
+                       (long int) data.ts);
             //fflush(stdout);
             if(first == 0 )
             {
                 char log[100];
+                memset(log,0,sizeof(log));
                 sprintf(log,"%ld Sensor node %d has opened a new connection.",time(NULL),data.id);
                 write(fd[WRITE_END], log, 100);
                 first = 1;
             }
+            sbuffer_insert(buffer,&data);
             sbuffer_insert(buffer,&data);
         }
     } while (result == TCP_NO_ERROR);
@@ -81,6 +83,7 @@ void* create_conn(void* node)
     {
         //printf("Peer has closed connection\n");
         char log[100];
+        memset(log,0,sizeof(log));
         sprintf(log,"%ld Sensor node %d has closed the connection.",time(NULL),data.id);
         write(fd[WRITE_END], log, 100);
     }

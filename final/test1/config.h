@@ -11,6 +11,10 @@
 # define MAX_SIZE 100
 # define READ_END 0
 # define WRITE_END 1
+# define BUS_SIZE 64
+# define TIME_OUT 5
+# define PORT 5678
+# define MAX_CONN 5
 
 extern int fd[2];
 
