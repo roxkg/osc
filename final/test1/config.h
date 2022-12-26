@@ -14,7 +14,7 @@
 # define BUS_SIZE 64
 # define TIME_OUT 5
 # define PORT 5678
-# define MAX_CONN 5
+# define MAX_CONN 3
 
 extern int fd[2];
 

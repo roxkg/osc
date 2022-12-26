@@ -62,12 +62,13 @@ int main()
                 if((end - start)>TIME_OUT)  
                 {
                     printf("total counter: %d\n",total_counter);
+                    if(total_counter < MAX_CONN){
                     for(int i = 0; i < total_counter;i++)
                     {
                         printf("cancel\n");
                         int x = pthread_join(threads[i],NULL);
                         printf("%d\n",x);
-                    }
+                    }}
                     int x = pthread_cancel(connmgr);
                     printf("connmgr: %d\n",x);
                     sensor_data_t data;

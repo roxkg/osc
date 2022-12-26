@@ -1,6 +1,104 @@
-1 1672006207 A new csv file is created.
-2 1672006209 Sensor node 15 has opened a new connection.
-3 1672006209 Data insertion from sensor 15 succeeded.
-4 1672006209 Data insertion from sensor 15 succeeded.
-5 1672006214 Data insertion from sensor 15 succeeded.
-6 1672006214 Data insertion from sensor 15 succeeded.
+1 1672012531 A new csv file is created.
+2 1672012533 Sensor node 1 has opened a new connection.
+3 1672012533 Received sensor data with invalid sensor node ID 1
+4 1672012533 Data insertion from sensor 1 succeeded.
+5 1672012533 Received sensor data with invalid sensor node ID 1
+6 1672012533 Data insertion from sensor 1 succeeded.
+7 1672012535 Received sensor data with invalid sensor node ID 1
+8 1672012535 Data insertion from sensor 1 succeeded.
+9 1672012535 Received sensor data with invalid sensor node ID 1
+10 1672012535 Data insertion from sensor 1 succeeded.
+11 1672012537 Received sensor data with invalid sensor node ID 1
+12 1672012537 Data insertion from sensor 1 succeeded.
+13 1672012537 Received sensor data with invalid sensor node ID 1
+14 1672012537 Data insertion from sensor 1 succeeded.
+15 1672012539 Received sensor data with invalid sensor node ID 1
+16 1672012539 Data insertion from sensor 1 succeeded.
+17 1672012539 Received sensor data with invalid sensor node ID 1
+18 1672012539 Data insertion from sensor 1 succeeded.
+19 1672012541 Sensor node 21 has opened a new connection.
+20 1672012541 Data insertion from sensor 21 succeeded.
+21 1672012541 Data insertion from sensor 21 succeeded.
+22 1672012542 Received sensor data with invalid sensor node ID 1
+23 1672012542 Data insertion from sensor 1 succeeded.
+24 1672012542 Received sensor data with invalid sensor node ID 1
+25 1672012542 Data insertion from sensor 1 succeeded.
+26 1672012544 Received sensor data with invalid sensor node ID 1
+27 1672012544 Data insertion from sensor 1 succeeded.
+28 1672012544 Received sensor data with invalid sensor node ID 1
+29 1672012544 Data insertion from sensor 1 succeeded.
+30 1672012544 Data insertion from sensor 21 succeeded.
+31 1672012544 Data insertion from sensor 21 succeeded.
+32 1672012546 Received sensor data with invalid sensor node ID 1
+33 1672012546 Data insertion from sensor 1 succeeded.
+34 1672012546 Received sensor data with invalid sensor node ID 1
+35 1672012546 Data insertion from sensor 1 succeeded.
+36 1672012547 Sensor node 3 has opened a new connection.
+37 1672012547 Received sensor data with invalid sensor node ID 3
+38 1672012547 Data insertion from sensor 3 succeeded.
+39 1672012547 Received sensor data with invalid sensor node ID 3
+40 1672012547 Data insertion from sensor 3 succeeded.
+41 1672012547 Data insertion from sensor 21 succeeded.
+42 1672012547 Data insertion from sensor 21 succeeded.
+43 1672012548 Received sensor data with invalid sensor node ID 1
+44 1672012548 Data insertion from sensor 1 succeeded.
+45 1672012548 Received sensor data with invalid sensor node ID 1
+46 1672012548 Data insertion from sensor 1 succeeded.
+47 1672012550 Received sensor data with invalid sensor node ID 1
+48 1672012550 Data insertion from sensor 1 succeeded.
+49 1672012550 Received sensor data with invalid sensor node ID 1
+50 1672012550 Data insertion from sensor 1 succeeded.
+51 1672012551 Data insertion from sensor 21 succeeded.
+52 1672012551 Data insertion from sensor 21 succeeded.
+53 1672012552 Received sensor data with invalid sensor node ID 3
+54 1672012552 Data insertion from sensor 3 succeeded.
+55 1672012552 Received sensor data with invalid sensor node ID 3
+56 1672012552 Data insertion from sensor 3 succeeded.
+57 1672012552 Received sensor data with invalid sensor node ID 1
+58 1672012552 Data insertion from sensor 1 succeeded.
+59 1672012552 Received sensor data with invalid sensor node ID 1
+60 1672012552 Data insertion from sensor 1 succeeded.
+61 1672012554 Data insertion from sensor 21 succeeded.
+62 1672012554 Data insertion from sensor 21 succeeded.
+63 1672012555 Received sensor data with invalid sensor node ID 1
+64 1672012555 Data insertion from sensor 1 succeeded.
+65 1672012555 Received sensor data with invalid sensor node ID 1
+66 1672012555 Data insertion from sensor 1 succeeded.
+67 1672012556 Received sensor data with invalid sensor node ID 3
+68 1672012556 Data insertion from sensor 3 succeeded.
+69 1672012556 Received sensor data with invalid sensor node ID 3
+70 1672012556 Data insertion from sensor 3 succeeded.
+71 1672012557 Data insertion from sensor 21 succeeded.
+72 1672012557 Data insertion from sensor 21 succeeded.
+73 1672012557 Received sensor data with invalid sensor node ID 1
+74 1672012557 Data insertion from sensor 1 succeeded.
+75 1672012557 Received sensor data with invalid sensor node ID 1
+76 1672012557 Data insertion from sensor 1 succeeded.
+77 1672012559 Received sensor data with invalid sensor node ID 1
+78 1672012559 Data insertion from sensor 1 succeeded.
+79 1672012559 Received sensor data with invalid sensor node ID 1
+80 1672012559 Data insertion from sensor 1 succeeded.
+81 1672012560 Received sensor data with invalid sensor node ID 3
+82 1672012560 Data insertion from sensor 3 succeeded.
+83 1672012560 Received sensor data with invalid sensor node ID 3
+84 1672012560 Data insertion from sensor 3 succeeded.
+85 1672012560 Data insertion from sensor 21 succeeded.
+86 1672012560 Data insertion from sensor 21 succeeded.
+87 1672012561 Received sensor data with invalid sensor node ID 1
+88 1672012561 Data insertion from sensor 1 succeeded.
+89 1672012561 Received sensor data with invalid sensor node ID 1
+90 1672012561 Data insertion from sensor 1 succeeded.
+91 1672012563 Data insertion from sensor 21 succeeded.
+92 1672012563 Data insertion from sensor 21 succeeded.
+93 1672012563 Sensor node 3 has closed the connection.
+94 1672012563 Received sensor data with invalid sensor node ID 1
+95 1672012563 Data insertion from sensor 1 succeeded.
+96 1672012563 Received sensor data with invalid sensor node ID 1
+97 1672012563 Data insertion from sensor 1 succeeded.
+98 1672012565 Received sensor data with invalid sensor node ID 1
+99 1672012565 Data insertion from sensor 1 succeeded.
+100 1672012565 Received sensor data with invalid sensor node ID 1
+101 1672012565 Data insertion from sensor 1 succeeded.
+102 1672012566 Sensor node 21 has closed the connection.
+103 1672012567 Sensor node 1 has closed the connection.
+104 1672012573 The csv file has been closed.

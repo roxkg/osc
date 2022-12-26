@@ -26,8 +26,6 @@ struct sbuffer {
     sbuffer_node_t *tail;       /**< a pointer to the last node in the buffer */
     pthread_mutex_t lock;
     pthread_cond_t write_signal;
-    pthread_cond_t read_signal;
-    short unsigned int read_first;
 };
 
 void stormgr_init(FILE* file){
@@ -48,7 +46,7 @@ void stormgr_init(FILE* file){
             fflush(file);
             sprintf(log,"%ld Data insertion from sensor %d succeeded.",time(NULL),data->id);
             write(fd[WRITE_END], log, 100);
-            if(i == SBUFFER_NO_DATA)    {pthread_cond_wait(&(buffer->write_signal),&insert_lock);puts("stormgr unlock");}
+            pthread_cond_wait(&(buffer->write_signal),&insert_lock);
         }
         else {perror("sbuffer read failure");break;}
     }
@@ -63,8 +61,6 @@ int sbuffer_init(sbuffer_t **buffer) {
     (*buffer)->tail = NULL;
     pthread_mutex_init(&((*buffer)->lock),NULL);
     pthread_cond_init(&((*buffer)->write_signal),NULL);
-    pthread_cond_init(&((*buffer)->read_signal),NULL);
-    (*buffer)->read_first = 0;
     return SBUFFER_SUCCESS;
 }
 
@@ -79,7 +75,6 @@ int sbuffer_free(sbuffer_t **buffer) {
         free(dummy);
     }
     pthread_cond_destroy(&((*buffer)->write_signal));
-    pthread_cond_destroy(&((*buffer)->read_signal));
     free(*buffer);
     *buffer = NULL;
     puts("buffer free");
@@ -87,63 +82,39 @@ int sbuffer_free(sbuffer_t **buffer) {
 }
 
 int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data, short unsigned int remove) {
-    sbuffer_node_t *dummy;
     if (buffer == NULL) return SBUFFER_FAILURE;
-    pthread_mutex_lock(&(buffer->lock));
     if (buffer->head == NULL) {
+        pthread_mutex_lock(&(buffer->lock));
         if(remove == 0) {puts("datamgr no value wait");pthread_cond_wait(&insert_signal,&(buffer->lock));}
         else {puts("stormgr no value wait");pthread_cond_wait(&(buffer->write_signal),&(buffer->lock));}
-
-        if(remove == 0) puts("datamgr work");
-        else puts("stormgr works");
     }
+    *data = buffer->head->data;
     if (buffer->head == buffer->tail){  // buffer has only one node
-        /*while((remove == 1 && buffer->read_first == 0) || (remove == 0 && buffer->read_first == 1))
-        {
-            if(remove == 0) pthread_cond_wait(&(buffer->read_signal),&(buffer->lock));
-            else pthread_cond_wait(&(buffer->write_signal),&(buffer->lock));
-        }*/
-        *data = buffer->head->data;
         if(remove == 1)
         {
+            sbuffer_node_t *dummy;
             dummy = buffer->head;
             buffer->head = buffer->tail = NULL;
             free(dummy);
-            buffer->read_first = 0;
-            pthread_cond_signal(&(buffer->read_signal));
         }
         else{
-            buffer->read_first = 1;
             pthread_cond_signal(&(buffer->write_signal));
         }
         pthread_mutex_unlock(&(buffer->lock));
         return SBUFFER_NO_DATA;
     }
     else{
-        while((remove == 1 && buffer->read_first == 0) || (remove == 0 && buffer->read_first == 1))
-        {
-            if(remove == 0) puts("datamgr stop");
-            else puts("stormgr stop");
-            if(remove == 0) pthread_cond_wait(&(buffer->read_signal),&(buffer->lock));
-            else pthread_cond_wait(&(buffer->write_signal),&(buffer->lock));
-            if(remove == 0) puts("datamgr continue");
-            else puts("stormgr continue");
-        }
         *data = buffer->head->data;
         if(remove == 1)
         {
+            sbuffer_node_t *dummy;
             dummy = buffer->head;
             buffer->head = buffer->head->next;
             free(dummy);
-            puts("here");
-            buffer->read_first = 0;
-            pthread_cond_signal(&(buffer->read_signal));
-            puts("tell datamgr continue");
+            pthread_cond_signal(&insert_signal);
         }
         else{
-            buffer->read_first = 1;
             pthread_cond_signal(&(buffer->write_signal));
-            puts("tell stormgr continue");
         }
     }
     pthread_mutex_unlock(&(buffer->lock));
@@ -161,17 +132,13 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
     if (buffer->tail == NULL) // buffer empty (buffer->head should also be NULL
     {
         buffer->head = buffer->tail = dummy;
-        buffer->read_first = 0;
-        //pthread_cond_broadcast(&(buffer->broadcast_signal));
         pthread_cond_signal(&insert_signal);
-        puts("\ninsert");
-        //pthread_mutex_unlock(&(buffer->lock));
+        puts("insert");
     } else // buffer not empty
     {
         buffer->tail->next = dummy;
         buffer->tail = buffer->tail->next;
     }
-    //printf("insert: %d-%g-%ld\n",data->id,data->value,data->ts);
     pthread_mutex_unlock(&(buffer->lock));
     return SBUFFER_SUCCESS;
 }

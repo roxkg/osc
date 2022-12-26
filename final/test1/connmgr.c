@@ -9,10 +9,6 @@
 #include "lib/tcpsock.h"
 #include "connmgr.h"
 
-
-
-//extern conn_list_t * connList;
-
 void* create_conn(void* client);
 
 void* connect()
@@ -64,7 +60,7 @@ void* create_conn(void* node)
         bytes = sizeof(data.ts);
         result = tcp_receive(client, (void *) &data.ts, &bytes);
         if ((result == TCP_NO_ERROR) && bytes) {
-            printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
+            printf("\nsensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
                        (long int) data.ts);
             //fflush(stdout);
             if(first == 0 )

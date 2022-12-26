@@ -11,8 +11,6 @@
 #include "datamgr.h"
 #include "sbuffer.h"
 
-//#define BUS_SIZE 1024
-
 static void * element_copy(void * element);
 static void element_free(void ** element);
 static int element_compare(void * x, void * y);
@@ -39,6 +37,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
         int i = sbuffer_remove(buffer,data,0);
         //if(i == SBUFFER_NO_DATA)   {puts("datamgr break");break;}
         if(i != SBUFFER_FAILURE){
+            //pthread_mutex_lock(&insert_lock);
         char result[BUS_SIZE];
         memset(result,0,sizeof(result));
         sprintf(result,"%hu %g %ld\n",data->id,data->value,data->ts);
@@ -62,8 +61,11 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
             sprintf(log,"%ld Sensor node %hu reports it's too hot (avg temp = %lf)",time(NULL),element.sensor_id,element.running_avg);
             write(fd[WRITE_END], log, 100); 
         }
-        if(i == SBUFFER_NO_DATA)    {pthread_cond_wait(&insert_signal,&insert_lock);
-        pthread_mutex_unlock(&insert_lock);}
+        //if(i == SBUFFER_NO_DATA)    {pthread_cond_wait(&insert_signal,&insert_lock);
+        //pthread_mutex_unlock(&insert_lock);}
+        //else    pthread_cond_wait(&insert_signal,&(buffer->lock));
+        pthread_cond_wait(&insert_signal,&insert_lock);
+        pthread_mutex_unlock(&insert_lock);
         }//pthread_mutex_unlock(&lock);
     }
     free(data);
