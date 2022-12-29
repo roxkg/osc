@@ -9,6 +9,10 @@
 #include "lib/tcpsock.h"
 #include "connmgr.h"
 
+#ifndef PORT
+#define PORT 5678
+#endif
+
 void* create_conn(void* client);
 
 void* connect()
@@ -71,7 +75,6 @@ void* create_conn(void* node)
                 write(fd[WRITE_END], log, 100);
                 first = 1;
             }
-            sbuffer_insert(buffer,&data);
             sbuffer_insert(buffer,&data);
         }
     } while (result == TCP_NO_ERROR);

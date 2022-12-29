@@ -25,34 +25,36 @@ struct sbuffer {
     sbuffer_node_t *head;       /**< a pointer to the first node in the buffer */
     sbuffer_node_t *tail;       /**< a pointer to the last node in the buffer */
     pthread_mutex_t lock;
-    pthread_cond_t write_signal;
+    
 };
 
-void stormgr_init(FILE* file){
+/*void stormgr_init(FILE* file){
     sensor_data_t* data = malloc(sizeof(sensor_data_t));
     memset(data,0,sizeof(sensor_data_t));
     char log[MAX_SIZE];
     memset(log,0,sizeof(log));
-    char result[64];
+    char result[BUS_SIZE];
     memset(result,0,sizeof(result));
     while(1)
     {
         int i = sbuffer_remove(buffer,data,1);
         if(i != SBUFFER_FAILURE ) {
-            sprintf(result,"%hu %g %ld\n",data->id,data->value,data->ts);
-            printf("readed id: %hu\n",data->id);
             if(data->id==0) {puts("stormgr break");break;}
-            fputs(result,file);
+            sprintf(result,"%hu %g %ld\n",data->id,data->value,data->ts);
+            int i = fputs(result,file);
             fflush(file);
-            sprintf(log,"%ld Data insertion from sensor %d succeeded.",time(NULL),data->id);
-            write(fd[WRITE_END], log, 100);
+            if(i < 0)
+            sprintf(log,"%ld An error occured when writing to the csv file.",data->ts);
+            else
+            sprintf(log,"%ld Data insertion from sensor %d succeeded.",data->ts,data->id);
+            write(fd[WRITE_END], log, MAX_SIZE);
             pthread_cond_wait(&(buffer->write_signal),&insert_lock);
         }
         else {perror("sbuffer read failure");break;}
     }
     free(data);
     puts("stormgr_init exit");
-}
+}*/
 
 int sbuffer_init(sbuffer_t **buffer) {
     *buffer = malloc(sizeof(sbuffer_t));
@@ -60,7 +62,7 @@ int sbuffer_init(sbuffer_t **buffer) {
     (*buffer)->head = NULL;
     (*buffer)->tail = NULL;
     pthread_mutex_init(&((*buffer)->lock),NULL);
-    pthread_cond_init(&((*buffer)->write_signal),NULL);
+    //pthread_cond_init(&((*buffer)->write_signal),NULL);
     return SBUFFER_SUCCESS;
 }
 
@@ -74,7 +76,7 @@ int sbuffer_free(sbuffer_t **buffer) {
         (*buffer)->head = (*buffer)->head->next;
         free(dummy);
     }
-    pthread_cond_destroy(&((*buffer)->write_signal));
+    //pthread_cond_destroy(&((*buffer)->write_signal));
     free(*buffer);
     *buffer = NULL;
     puts("buffer free");
@@ -86,7 +88,7 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data, short unsigned int re
     if (buffer->head == NULL) {
         pthread_mutex_lock(&(buffer->lock));
         if(remove == 0) {puts("datamgr no value wait");pthread_cond_wait(&insert_signal,&(buffer->lock));}
-        else {puts("stormgr no value wait");pthread_cond_wait(&(buffer->write_signal),&(buffer->lock));}
+        else {puts("stormgr no value wait");pthread_cond_wait(&write_signal,&(buffer->lock));}
     }
     *data = buffer->head->data;
     if (buffer->head == buffer->tail){  // buffer has only one node
@@ -98,7 +100,7 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data, short unsigned int re
             free(dummy);
         }
         else{
-            pthread_cond_signal(&(buffer->write_signal));
+            pthread_cond_signal(&write_signal);
         }
         pthread_mutex_unlock(&(buffer->lock));
         return SBUFFER_NO_DATA;
@@ -114,7 +116,7 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data, short unsigned int re
             pthread_cond_signal(&insert_signal);
         }
         else{
-            pthread_cond_signal(&(buffer->write_signal));
+            pthread_cond_signal(&write_signal);
         }
     }
     pthread_mutex_unlock(&(buffer->lock));

@@ -29,17 +29,23 @@ FILE * open_db(char * filename, bool append)
     
 int insert_sensor(FILE * f, sensor_id_t id,sensor_value_t value,sensor_ts_t ts)
 {
-    int i = fprintf(f, "%hu,%f,%ld\n",id,value,ts);
-    char log[100];
+    //int i = fprintf(f, "%hu,%f,%ld\n",id,value,ts);
+    char log[MAX_SIZE];
+    memset(log,0,sizeof(log));
+    char result[64];
+    memset(result,0,sizeof(result));
+    sprintf(result,"%hu %g %ld\n",id,value,ts);
+    int i = fputs(result,f);
+    fflush(f);
     if(i < 0) 
     {
-        sprintf(log,"%ld An error occured when writing to the csv file.",time(NULL));
+        sprintf(log,"%ld An error occured when writing to the csv file.",ts);
     }
     else
     {
-        sprintf(log,"%ld Data insertion succeeded.",time(NULL));     
+        sprintf(log,"%ld Data insertion from sensor %d succeeded.",ts,id);    
     }
-    write(fd[WRITE_END], log, 100);
+    write(fd[WRITE_END], log, MAX_SIZE);
     return i;
 }
 

@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 
@@ -68,7 +69,7 @@ int tcp_passive_open(tcpsock_t **sock, int port) {
     TCP_ERR_HANDLER(s == NULL, return TCP_MEMORY_ERROR);
     s->sd = socket(PROTOCOLFAMILY, TYPE, PROTOCOL);
     TCP_DEBUG_PRINTF(s->sd < 0, "Socket() failed with errno = %d [%s]", errno, strerror(errno));
-    TCP_ERR_HANDLER(s->sd < 0, free(s);return 6);
+    TCP_ERR_HANDLER(s->sd < 0, free(s);return 3);
     // Construct the server address structure
     memset(&addr, 0, sizeof(struct sockaddr_in));
     addr.sin_family = PROTOCOLFAMILY;
@@ -76,14 +77,18 @@ int tcp_passive_open(tcpsock_t **sock, int port) {
     addr.sin_port = htons(port);
     result = bind(s->sd, (struct sockaddr *) &addr, sizeof(addr));
     TCP_DEBUG_PRINTF(result == -1, "Bind() failed with errno = %d [%s]", errno, strerror(errno));
-    TCP_ERR_HANDLER(result != 0, free(s);return 7);
+    TCP_ERR_HANDLER(result != 0, free(s);return 3);
     result = listen(s->sd, MAX_PENDING);
     TCP_DEBUG_PRINTF(result == -1, "Listen() failed with errno = %d [%s]", errno, strerror(errno));
-    TCP_ERR_HANDLER(result != 0, free(s);return 8);
+    TCP_ERR_HANDLER(result != 0, free(s);return 3);
     s->ip_addr = NULL; // address set to INADDR_ANY - not a specific IP address
     s->port = port;
     s->cookie = MAGIC_COOKIE;
     *sock = s;
+    /*struct timeval timeout;
+    timeout.tv_sec = 5;
+    timeout.tv_usec = 0;
+    setsockopt (s->sd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout,sizeof timeout);*/
     return TCP_NO_ERROR;
 }
 
@@ -209,6 +214,7 @@ int tcp_receive(tcpsock_t *socket, void *buffer, int *buf_size) {
         return TCP_NO_ERROR;
     }
     *buf_size = recv(socket->sd, buffer, *buf_size, 0);
+    //*buf_size = recv(socket->sd, buffer, *buf_size, MSG_WAITALL);
     TCP_DEBUG_PRINTF(*buf_size == 0, "Recv() : no connection to peer\n");
     TCP_ERR_HANDLER(*buf_size == 0, return TCP_CONNECTION_CLOSED);
     TCP_DEBUG_PRINTF((*buf_size < 0) && (errno == ENOTCONN), "Recv() : no connection to peer\n");
@@ -247,6 +253,7 @@ static tcpsock_t *tcp_sock_create() {
         s->port = -1;
         s->ip_addr = NULL;
         s->sd = -1;
+              
     }
     return s;
 }

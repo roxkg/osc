@@ -25,7 +25,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
     while(fgets(store,BUS_SIZE,fp_sensor_map) != NULL)
     {
         sscanf(store, "%hu%hu", &(element.room_id), &(element.sensor_id));
-        dpl_insert_at_index(list,&element,9,true);
+        dpl_insert_at_index(list,&element,100,true);
         printf("room id %hu -- sensor id %hu\n",element.room_id,element.sensor_id);
     }
     sensor_value_t start[dpl_size(list)][RUN_AVG_LENGTH];
@@ -61,12 +61,9 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
             sprintf(log,"%ld Sensor node %hu reports it's too hot (avg temp = %lf)",time(NULL),element.sensor_id,element.running_avg);
             write(fd[WRITE_END], log, 100); 
         }
-        //if(i == SBUFFER_NO_DATA)    {pthread_cond_wait(&insert_signal,&insert_lock);
-        //pthread_mutex_unlock(&insert_lock);}
-        //else    pthread_cond_wait(&insert_signal,&(buffer->lock));
         pthread_cond_wait(&insert_signal,&insert_lock);
         pthread_mutex_unlock(&insert_lock);
-        }//pthread_mutex_unlock(&lock);
+        }
     }
     free(data);
 }
@@ -138,13 +135,9 @@ element_t* datamgr_get_node_by_sensor(sensor_id_t sensor_id)
 {
     short unsigned int find = 0;
     element_t* element;
-    //if(sensor_id!=0)
-    //printf("start to find sensor %hu\n",sensor_id);
     for(int i = 0 ; i < dpl_size(list);i++){
         element = (element_t *)dpl_get_element_at_index(list,i);
         sensor_id_t id = element->sensor_id;
-        //if(sensor_id!= 0)
-        //printf("current sensor id %hu--current index %d\n",id,i);
         if(id == sensor_id) {
             find = 1;
             break;
@@ -206,12 +199,7 @@ sensor_value_t get_zeros(sensor_value_t arr[][RUN_AVG_LENGTH],int i,sensor_value
         arr[i][counter] = value;
         counter++;
     }
-    //for(int j = 0; j < RUN_AVG_LENGTH;j++)
-    //{
-    //    printf("arr%d--%G\n",j,arr[i][j]); 
-    //}
     sensor_value_t total = 0;
-    //counter = (counter == RUN_AVG_LENGTH) ? counter : counter+1;
     for(int x = 0; x < counter ; x++)
     {
         total += arr[i][x];

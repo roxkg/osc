@@ -7,6 +7,7 @@
 
 #include "config.h"
 
+
 #define SBUFFER_FAILURE -1
 #define SBUFFER_SUCCESS 0
 #define SBUFFER_NO_DATA 1
@@ -17,12 +18,13 @@ extern sbuffer_t *buffer;
 extern int conn_counter;
 extern pthread_mutex_t insert_lock;
 extern pthread_cond_t insert_signal;
+extern pthread_cond_t write_signal;
 /**
  * Allocates and initializes a new shared buffer
  * \param buffer a double pointer to the buffer that needs to be initialized
  * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
  */
-void stormgr_init(FILE* file);
+//void stormgr_init(FILE* file);
 
 int sbuffer_init(sbuffer_t **buffer);
 
