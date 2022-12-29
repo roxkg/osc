@@ -1,0 +1,237 @@
+==4452== Memcheck, a memory error detector
+==4452== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4452== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==4452== Command: ./sensor_gateway 3456
+==4452== Parent PID: 1229
+==4452== 
+==4452== Thread 4:
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C5D08: __printf_fp_l (printf_fp.c:396)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C5D22: __printf_fp_l (printf_fp.c:396)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C155A: __mpn_extract_double (dbl2mpn.c:56)
+==4452==    by 0x48C6016: __printf_fp_l (printf_fp.c:396)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C155F: __mpn_extract_double (dbl2mpn.c:60)
+==4452==    by 0x48C6016: __printf_fp_l (printf_fp.c:396)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C6A00: __printf_fp_l (printf_fp.c:978)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C6A3A: __printf_fp_l (printf_fp.c:981)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C6A74: __printf_fp_l (printf_fp.c:991)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C6AA8: round_away (rounding-mode.h:52)
+==4452==    by 0x48C6AA8: __printf_fp_l (printf_fp.c:998)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C6AE1: __printf_fp_l (printf_fp.c:1097)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C6D25: __printf_fp_l (printf_fp.c:1166)
+==4452==    by 0x48E19AC: __printf_fp_spec (vfprintf-internal.c:354)
+==4452==    by 0x48E19AC: __vfprintf_internal (vfprintf-internal.c:1558)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48E1B56: __vfprintf_internal (vfprintf-internal.c:1516)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Use of uninitialised value of size 8
+==4452==    at 0x48C533B: _itoa_word (_itoa.c:177)
+==4452==    by 0x48E0B3D: __vfprintf_internal (vfprintf-internal.c:1516)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48C534C: _itoa_word (_itoa.c:177)
+==4452==    by 0x48E0B3D: __vfprintf_internal (vfprintf-internal.c:1516)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48E1643: __vfprintf_internal (vfprintf-internal.c:1516)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== Conditional jump or move depends on uninitialised value(s)
+==4452==    at 0x48E0C85: __vfprintf_internal (vfprintf-internal.c:1516)
+==4452==    by 0x48ECA08: __vsprintf_internal (iovsprintf.c:95)
+==4452==    by 0x48CB9A7: sprintf (sprintf.c:30)
+==4452==    by 0x10B585: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4456== 
+==4456== HEAP SUMMARY:
+==4456==     in use at exit: 112 bytes in 2 blocks
+==4456==   total heap usage: 8 allocs, 6 frees, 6,520 bytes allocated
+==4456== 
+==4456== 56 bytes in 1 blocks are definitely lost in loss record 2 of 2
+==4456==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4456==    by 0x10C145: sbuffer_init (in /home/mg/osc/final/test1/sensor_gateway)
+==4456==    by 0x10A7B5: main (in /home/mg/osc/final/test1/sensor_gateway)
+==4456== 
+==4456== LEAK SUMMARY:
+==4456==    definitely lost: 56 bytes in 1 blocks
+==4456==    indirectly lost: 0 bytes in 0 blocks
+==4456==      possibly lost: 0 bytes in 0 blocks
+==4456==    still reachable: 56 bytes in 1 blocks
+==4456==         suppressed: 0 bytes in 0 blocks
+==4456== Reachable blocks (those to which a pointer was found) are not shown.
+==4456== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==4456== 
+==4456== For lists of detected and suppressed errors, rerun with: -s
+==4456== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==4452== 
+==4452== HEAP SUMMARY:
+==4452==     in use at exit: 624 bytes in 5 blocks
+==4452==   total heap usage: 43 allocs, 38 frees, 16,102 bytes allocated
+==4452== 
+==4452== Thread 1:
+==4452== 32 bytes in 1 blocks are definitely lost in loss record 1 of 5
+==4452==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4452==    by 0x4861D46: tcp_sock_create (in /home/mg/osc/final/test1/lib/libtcpsock.so)
+==4452==    by 0x4861400: tcp_passive_open (in /home/mg/osc/final/test1/lib/libtcpsock.so)
+==4452==    by 0x10ADF2: get_connect (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AC26: init_connmgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== 32 bytes in 1 blocks are definitely lost in loss record 2 of 5
+==4452==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4452==    by 0x4861D46: tcp_sock_create (in /home/mg/osc/final/test1/lib/libtcpsock.so)
+==4452==    by 0x486190E: tcp_wait_for_connection (in /home/mg/osc/final/test1/lib/libtcpsock.so)
+==4452==    by 0x10AE2F: get_connect (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AC26: init_connmgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== 32 bytes in 1 blocks are definitely lost in loss record 3 of 5
+==4452==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4452==    by 0x485C1DA: dpl_create (in /home/mg/osc/final/test1/lib/libdplist.so)
+==4452==    by 0x10B2FF: datamgr_parse_sensor_files (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10AD8A: init_datamgr (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x48FFB42: start_thread (pthread_create.c:442)
+==4452==    by 0x4990BB3: clone (clone.S:100)
+==4452== 
+==4452== 56 bytes in 1 blocks are definitely lost in loss record 4 of 5
+==4452==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4452==    by 0x10C145: sbuffer_init (in /home/mg/osc/final/test1/sensor_gateway)
+==4452==    by 0x10A7B5: main (in /home/mg/osc/final/test1/sensor_gateway)
+==4452== 
+==4452== LEAK SUMMARY:
+==4452==    definitely lost: 152 bytes in 4 blocks
+==4452==    indirectly lost: 0 bytes in 0 blocks
+==4452==      possibly lost: 0 bytes in 0 blocks
+==4452==    still reachable: 472 bytes in 1 blocks
+==4452==         suppressed: 0 bytes in 0 blocks
+==4452== Reachable blocks (those to which a pointer was found) are not shown.
+==4452== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==4452== 
+==4452== Use --track-origins=yes to see where uninitialised values come from
+==4452== For lists of detected and suppressed errors, rerun with: -s
+==4452== ERROR SUMMARY: 30 errors from 19 contexts (suppressed: 0 from 0)

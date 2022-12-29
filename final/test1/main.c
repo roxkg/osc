@@ -9,11 +9,7 @@
 #include "connmgr.h"
 #include "datamgr.h"
 #include "sensor_db.h"
-
-#ifndef TIMEOUT
-#define TIMEOUT 5
-#endif
-
+#include "lib/tcpsock.h"
 
 /*
     try to combine connmgr & sbuffer. Realize print data within sbuffer_remove
@@ -21,22 +17,38 @@
 */
 sbuffer_t *buffer;
 pthread_mutex_t insert_lock;
+pthread_mutex_t pip_lock;
 pthread_cond_t insert_signal;
 pthread_cond_t write_signal;
 int conn_counter = 0;
 int total_counter = 0;
 pthread_t threads[MAX_CONN];
 int fd[2];
+int PORT;
 
 void* init_connmgr();
 void* init_stormgr();
 void* init_datamgr();
 
-int main()
+int main(int argc, char *argv[])
 {
+
+    if(argc != 2)
+    {
+        exit(EXIT_SUCCESS);
+    } else
+    {
+        PORT = atoi(argv[1]);
+        if(PORT > MAX_PORT || PORT < MIN_PORT) 
+        {
+            exit(EXIT_SUCCESS);
+        }
+    }
+
     sbuffer_init(&buffer);
     pthread_t connmgr,datamgr,stormgr;
     pthread_mutex_init(&insert_lock,NULL);
+    pthread_mutex_init(&pip_lock,NULL);
     pthread_cond_init(&insert_signal,NULL);
     pthread_cond_init(&write_signal,NULL);
     sbuffer_init(&buffer);
@@ -109,12 +121,12 @@ int main()
         while(1) {   
             char buff[100];
             read(fd[0], buff, 100);
-            if(strcmp(buff,"")!=0){
+            //if(strcmp(buff,"")!=0){
                 printf("%s\n", buff);
                 if(strcmp(buff, "close")==0) break;
                 counter++;
                 fprintf(logFile, "%d %s\n",counter,buff);
-                fflush(logFile);}    
+                fflush(logFile);//}    
         }    
         fclose(logFile);       
         printf("child finish\n");
@@ -129,20 +141,15 @@ int main()
 
 void* init_connmgr()
 {
-    connect();
+    get_connect();
     pthread_exit(SBUFFER_SUCCESS);
 }
 
 void* init_stormgr()
 {
     FILE* file = open_db("data.csv",false);
-    //stormgr_init(file);
     sensor_data_t* data = malloc(sizeof(sensor_data_t));
     memset(data,0,sizeof(sensor_data_t));
-    //char log[MAX_SIZE];
-    //memset(log,0,sizeof(log));
-    //char result[BUS_SIZE];
-    //memset(result,0,sizeof(result));
     while(1)
     {
         int i = sbuffer_remove(buffer,data,1);
@@ -154,7 +161,6 @@ void* init_stormgr()
         else {perror("sbuffer read failure");break;}
     }
     free(data);
-    puts("stormgr_init exit");
     close_db(file);
     pthread_exit(SBUFFER_SUCCESS);
 }
@@ -164,7 +170,6 @@ void* init_datamgr()
     FILE * map = fopen("room_sensor.map", "r");
     if(map == NULL) {perror("fail to open room_sensor");pthread_exit(SBUFFER_SUCCESS);}
     datamgr_parse_sensor_files(map);
-    puts("datamgr close");
     datamgr_free();
     pthread_exit(SBUFFER_SUCCESS);
 }

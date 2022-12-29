@@ -17,6 +17,11 @@
 #define MAX_CONN 3
 #endif
 
+#ifndef TIMEOUT
+#define TIMEOUT 5
+#endif
+
+
 extern int fd[2];
 
 typedef uint16_t sensor_id_t;

@@ -43,6 +43,7 @@
 
 extern sbuffer_t* buffer;
 extern pthread_mutex_t insert_lock;
+extern pthread_mutex_t pip_lock;
 extern pthread_cond_t insert_signal;
 //extern pthread_mutex_t lock;
 void datamgr_parse_sensor_files(FILE *fp_sensor_map);

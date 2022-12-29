@@ -28,34 +28,6 @@ struct sbuffer {
     
 };
 
-/*void stormgr_init(FILE* file){
-    sensor_data_t* data = malloc(sizeof(sensor_data_t));
-    memset(data,0,sizeof(sensor_data_t));
-    char log[MAX_SIZE];
-    memset(log,0,sizeof(log));
-    char result[BUS_SIZE];
-    memset(result,0,sizeof(result));
-    while(1)
-    {
-        int i = sbuffer_remove(buffer,data,1);
-        if(i != SBUFFER_FAILURE ) {
-            if(data->id==0) {puts("stormgr break");break;}
-            sprintf(result,"%hu %g %ld\n",data->id,data->value,data->ts);
-            int i = fputs(result,file);
-            fflush(file);
-            if(i < 0)
-            sprintf(log,"%ld An error occured when writing to the csv file.",data->ts);
-            else
-            sprintf(log,"%ld Data insertion from sensor %d succeeded.",data->ts,data->id);
-            write(fd[WRITE_END], log, MAX_SIZE);
-            pthread_cond_wait(&(buffer->write_signal),&insert_lock);
-        }
-        else {perror("sbuffer read failure");break;}
-    }
-    free(data);
-    puts("stormgr_init exit");
-}*/
-
 int sbuffer_init(sbuffer_t **buffer) {
     *buffer = malloc(sizeof(sbuffer_t));
     if (*buffer == NULL) return SBUFFER_FAILURE;

@@ -85,10 +85,6 @@ int tcp_passive_open(tcpsock_t **sock, int port) {
     s->port = port;
     s->cookie = MAGIC_COOKIE;
     *sock = s;
-    /*struct timeval timeout;
-    timeout.tv_sec = 5;
-    timeout.tv_usec = 0;
-    setsockopt (s->sd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout,sizeof timeout);*/
     return TCP_NO_ERROR;
 }
 
@@ -214,11 +210,12 @@ int tcp_receive(tcpsock_t *socket, void *buffer, int *buf_size) {
         return TCP_NO_ERROR;
     }
     *buf_size = recv(socket->sd, buffer, *buf_size, 0);
-    //*buf_size = recv(socket->sd, buffer, *buf_size, MSG_WAITALL);
     TCP_DEBUG_PRINTF(*buf_size == 0, "Recv() : no connection to peer\n");
     TCP_ERR_HANDLER(*buf_size == 0, return TCP_CONNECTION_CLOSED);
     TCP_DEBUG_PRINTF((*buf_size < 0) && (errno == ENOTCONN), "Recv() : no connection to peer\n");
     TCP_ERR_HANDLER((*buf_size < 0) && (errno == ENOTCONN), return TCP_CONNECTION_CLOSED);
+    TCP_DEBUG_PRINTF((*buf_size == -1) && (errno == EAGAIN), "Recv() : connection timeout to peer\n");
+    TCP_ERR_HANDLER((*buf_size == -1) && (errno == EAGAIN), return TCP_CONNECTION_CLOSED);
     TCP_DEBUG_PRINTF(*buf_size < 0, "Recv() failed with errno = %d [%s]", errno, strerror(errno));
     TCP_ERR_HANDLER(*buf_size < 0, return TCP_SOCKOP_ERROR);
     return TCP_NO_ERROR;

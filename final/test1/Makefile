@@ -56,19 +56,19 @@ run : sensor_gateway sensor_node
 	@echo "Add your own implementation here..."
 
 runserver: test_server
-	./test_server 5678
+	./sensor_gateway 3456
 
 runclient1: sensor_node
-	./sensor_node 15 1 127.0.0.1 5678
+	./sensor_node 15 15 127.0.0.1 3456
 
 runclient2: sensor_node
-	./sensor_node 21 3 127.0.0.1 5678
+	./sensor_node 21 3 127.0.0.1 3456
 
 runclient3: sensor_node
-	./sensor_node 3 4 127.0.0.1 5678
+	./sensor_node 3 4 127.0.0.1 3456
 
 runclient4: sensor_node
-	./sensor_node 4 6 127.0.0.1 5678
+	./sensor_node 4 6 127.0.0.1 3456
 
 zip:
 	zip lab_final.zip main.c connmgr.c connmgr.h datamgr.c datamgr.h sbuffer.c sbuffer.h sensor_db.c sensor_db.h config.h lib/dplist.c lib/dplist.h lib/tcpsock.c lib/tcpsock.h

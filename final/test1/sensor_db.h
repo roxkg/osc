@@ -4,7 +4,7 @@
 #include<stdbool.h>
 #include <time.h>
 
-
+extern pthread_mutex_t pip_lock;
 //extern bool pipe_empty;
 
 FILE * open_db(char * filename, bool append);

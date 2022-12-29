@@ -47,7 +47,9 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
         if(datamgr_get_node_by_sensor(data->id) == NULL)
         {
             sprintf(log,"%ld Received sensor data with invalid sensor node ID %d",time(NULL),data->id);
+            pthread_mutex_lock(&pip_lock);
             write(fd[WRITE_END], log, 100);
+            pthread_mutex_unlock(&pip_lock);
         }
         else{
             element = *datamgr_get_node_by_sensor(data->id);
@@ -59,7 +61,9 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map)
             sprintf(log,"%ld Sensor node %hu reports it's too cold (avg temp = %lf)",time(NULL),element.sensor_id,element.running_avg);
             if(element.running_avg > SET_MAX_TEMP)
             sprintf(log,"%ld Sensor node %hu reports it's too hot (avg temp = %lf)",time(NULL),element.sensor_id,element.running_avg);
+            pthread_mutex_lock(&pip_lock);
             write(fd[WRITE_END], log, 100); 
+            pthread_mutex_unlock(&pip_lock);
         }
         pthread_cond_wait(&insert_signal,&insert_lock);
         pthread_mutex_unlock(&insert_lock);

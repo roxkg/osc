@@ -5,6 +5,7 @@
 #include<stdbool.h>
 #include<fcntl.h>
 #include<unistd.h>
+#include<pthread.h>
 #include<string.h>
 #include"sensor_db.h"
 
@@ -22,7 +23,9 @@ FILE * open_db(char * filename, bool append)
     char log[100];
     memset(log,0,sizeof(log));
     sprintf(log,"%ld A new csv file is created.",time(NULL));
+    pthread_mutex_lock(&pip_lock);
     write(fd[WRITE_END], log, 100);
+    pthread_mutex_unlock(&pip_lock);
     assert(file!=NULL);
     return file;
 }
@@ -45,7 +48,9 @@ int insert_sensor(FILE * f, sensor_id_t id,sensor_value_t value,sensor_ts_t ts)
     {
         sprintf(log,"%ld Data insertion from sensor %d succeeded.",ts,id);    
     }
+    pthread_mutex_lock(&pip_lock);
     write(fd[WRITE_END], log, MAX_SIZE);
+    pthread_mutex_unlock(&pip_lock);
     return i;
 }
 
@@ -62,8 +67,10 @@ int close_db(FILE *f)
     {
         sprintf(log,"%ld The csv file has been closed.",time(NULL));
     }
+    pthread_mutex_lock(&pip_lock);
     write(fd[WRITE_END], log, 100);
     write(fd[WRITE_END],"close",6);
+    pthread_mutex_unlock(&pip_lock);
     return i;
 }
 
